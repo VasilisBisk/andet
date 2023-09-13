@@ -1,0 +1,7 @@
+#!/bin/bash
+
+ENV_FILE=""
+START_DATE=$(date -d'yesterday' '+%Y-%m-%d')
+END_DATE=$(date -d'yesterday' '+%Y-%m-%d')
+
+docker container run --env-file $ENV_FILE fvt-ml cpu-spike-detection stdev infer $START_DATE $END_DATE "aegis-it-research-server1"
