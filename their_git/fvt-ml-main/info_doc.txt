@@ -1,0 +1,64 @@
+ suggested way to execute the container and add it in interactive mode:
+
+sudo docker container run -e ES_RAW_DATA_REPO_HOST=localhost -e ES_RAW_DATA_REPO_USERNAME=elastic -e ES_RAW_DATA_REPO_PASSWORD=changeme -e ES_RAW_DATA_REPO_INDEX=raw_data -e ES_RAW_DATA_REPO_KEEP_ALIVE=1m -e ES_PREDICTIONS_REPO_SIZE=100 -it --rm fvt-ml /bin/bash
+
+or 
+
+sudo docker container run -e ES_RAW_DATA_REPO_HOST=localhost -e ES_RAW_DATA_REPO_USERNAME=elastic -e ES_RAW_DATA_REPO_PASSWORD=changeme -e ES_RAW_DATA_REPO_INDEX=raw_data -e ES_RAW_DATA_REPO_KEEP_ALIVE=1m -e ES_PREDICTIONS_REPO_SIZE=100 -e "host=localhost" -e "username=elastic" -e "password=changeme" -e "index=raw_data"  -it --rm fvt-ml /bin/bash
+
+
+or (best i guess)
+
+sudo docker container run    -e ES_RAW_DATA_REPO_HOST=localhost    -e ES_RAW_DATA_REPO_USERNAME=elastic    -e ES_RAW_DATA_REPO_PASSWORD=changeme    -e ES_RAW_DATA_REPO_INDEX=raw_data    -e ES_PREDICTIONS_REPO_HOST=localhost    -e ES_PREDICTIONS_REPO_USERNAME=elastic_username    -e ES_PREDICTIONS_REPO_PASSWORD=elastic_password    -e ES_PREDICTIONS_REPO_INDEX=predictions_index    -it --rm fvt-ml /bin/bash
+
+###
+how to see logs:
+
+sudo docker logs 86e8c8234ec8
+
+where the ID name comes from:
+
+docker ps | grep elasticsearch
+
+
+how to run main.py in docker container:
+
+python /code/src/fvt_ml/cpu_spike_detection/main.py stdev train "2023-01-01" "2023-01-31" "predictionstestindex"
+###################
+try these beofre running, not sure why
+######################
+# Setting the host for the Elasticsearch instance for predictions.
+export ES_PREDICTIONS_REPO_HOST=localhost
+
+# Setting the default username for Elasticsearch for predictions.
+export ES_PREDICTIONS_REPO_USERNAME=elastic
+
+# Setting a default password for predictions. Adjust if you know the specific password for your setup.
+export ES_PREDICTIONS_REPO_PASSWORD=changeme
+
+# Setting an index name for testing purposes for predictions.
+export ES_PREDICTIONS_REPO_INDEX=predictionstestindex
+
+# Assuming there are similar settings for keep-alive and size for predictions, you can set them as:
+export ES_PREDICTIONS_REPO_KEEP_ALIVE=1m
+export ES_PREDICTIONS_REPO_SIZE=100
+####################
+
+
+
+### how to list all indices:
+
+curl -u elastic:changeme -X GET "localhost:9200/_cat/indices?v"
+
+
+## since none, how to create an index:
+
+curl -u elastic:changeme -X PUT "localhost:9200/raw_data"
+
+##add index data:
+
+curl -u elastic:changeme -X POST "localhost:9200/raw_data/_doc/" -H 'Content-Type: application/json' -d'
+{
+  "example_field": "sample data"
+}'
+####

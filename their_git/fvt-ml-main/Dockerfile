@@ -1,5 +1,6 @@
 FROM python:3.8-slim-buster as req-stage
 
+
 WORKDIR /tmp
 RUN pip install poetry
 COPY ./pyproject.toml ./poetry.lock* /tmp/
